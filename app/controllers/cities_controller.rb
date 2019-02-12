@@ -40,6 +40,8 @@ class CitiesController < ApplicationController
   # PATCH/PUT /cities/1
   # PATCH/PUT /cities/1.json
   def update
+    return if params.dig(:city, :version_number).to_i < City.find(params[:id]).try(:version_number)
+   
     respond_to do |format|
       if @city.update(city_params)
         format.html { redirect_to @city, notice: 'City was successfully updated.' }
@@ -69,6 +71,6 @@ class CitiesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def city_params
-      params.require(:city).permit(:name, :population, :country)
+      params.require(:city).permit(:name, :population, :country, :version_number)
     end
 end
